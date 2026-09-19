@@ -1,6 +1,5 @@
 //! General types for use in API response body types.
 
-use chrono::{DateTime, Utc};
 use serde::Serialize;
 
 use crate::id::{Id, IdInner as IdInnerTrait};
@@ -33,9 +32,9 @@ pub(crate) struct Session<IdInner = <Id as IdInnerTrait>::Inner> {
     /// The session's ID.
     pub id: Id<IdInner>,
 
-    /// The timestamp this session was first created.
-    pub created_at: DateTime<Utc>,
+    /// The timestamp this session was first created in Unix milliseconds.
+    pub created_at: i64,
 
-    /// The timestamp this session was last used.
-    pub accessed_at: DateTime<Utc>,
+    /// The timestamp this session was last used in Unix milliseconds.
+    pub accessed_at: i64,
 }

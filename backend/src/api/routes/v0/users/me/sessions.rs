@@ -35,12 +35,16 @@ pub(crate) async fn get(AuthToken(token_hash): AuthToken) -> impl Response<GetRe
             return Err(TxError::Abort(api::Error::AuthFailed));
         };
 
-        Ok(sqlx::query_as!(
-            Session,
+        Ok(sqlx::query!(
             "SELECT token_hash AS id, created_at, accessed_at FROM sessions
                 WHERE user_id = $1",
             user_id,
         )
+        .map(|session| Session {
+            id: session.id.into(),
+            created_at: session.created_at.timestamp_millis(),
+            accessed_at: session.accessed_at.timestamp_millis(),
+        })
         .fetch_all(tx.as_mut())
         .await?)
     })
